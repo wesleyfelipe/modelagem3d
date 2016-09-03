@@ -124,31 +124,24 @@ Mesh* getCuboMesh() {
 	f5n.push_back(5);
 	f5n.push_back(5);
 
+	vector<GLint> mappings;
+
 	vector<Face*> faces;
-	faces.push_back(new Face(f0v, f0n));
-	faces.push_back(new Face(f1v, f1n));
-	faces.push_back(new Face(f2v, f2n));
-	faces.push_back(new Face(f3v, f3n));
-	faces.push_back(new Face(f4v, f4n));
-	faces.push_back(new Face(f5v, f5n));
+	faces.push_back(new Face(f0v, f0n, mappings));
+	faces.push_back(new Face(f1v, f1n, mappings));
+	faces.push_back(new Face(f2v, f2n, mappings));
+	faces.push_back(new Face(f3v, f3n, mappings));
+	faces.push_back(new Face(f4v, f4n, mappings));
+	faces.push_back(new Face(f5v, f5n, mappings));
 
 	vector<Group*> groups;
 	groups.push_back(new Group(faces));
 
-	return new Mesh(groups, allVertex, allNormals);
+	vector<TextureMapping*> allMappings;
+	return new Mesh(groups, allVertex, allNormals, allMappings);
 }
 
 void desenhaObjeto(Mesh *mesh) {
-	/*glEnableClientState(GL_VERTEX_ARRAY);
-	glvertexpointer(3, gl_float, sizeof(struct vertex), mesh->allvertex.data());
-	glcolor3d(0.5, 0.8, 0.2);
-
-	for (int i = 0; i < mesh->groups.size(); i++) {
-	for (int j = 0; j < mesh->groups[i]->groupfaces.size(); j++) {
-	gldrawelements(gl_triangles, 3, gl_unsigned_int, mesh->groups[i]->groupfaces[j]->vertex.data());
-	}
-	}*/
-
 	glEnable(GL_DEPTH_TEST);
 	for (int i = 0; i < mesh->groups.size(); i++) {
 		for (int j = 0; j < mesh->groups[i]->groupFaces.size(); j++) {
