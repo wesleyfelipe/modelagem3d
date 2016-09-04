@@ -31,6 +31,7 @@ typedef struct Face {
 		normals = n;
 		mappings = m;
 	}
+	Face(){}
 } Face;
 
 typedef struct Group {
@@ -38,6 +39,7 @@ typedef struct Group {
 	Group(vector<Face*> f) {
 		groupFaces = f;
 	}
+	Group(){}
 } Group;
 
 typedef struct Mesh {

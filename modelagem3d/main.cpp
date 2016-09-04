@@ -146,11 +146,14 @@ Mesh* getCuboMesh() {
 
 void desenhaObjeto(Mesh *mesh) {
 	glEnable(GL_DEPTH_TEST);
+
+	glColor3d(0.7, 0.6, 0.5);
+
 	for (int i = 0; i < mesh->groups.size(); i++) {
 		for (int j = 0; j < mesh->groups[i]->groupFaces.size(); j++) {
 			glBegin(GL_POLYGON);
 			for (int k = 0; k < mesh->groups[i]->groupFaces[j]->vertex.size(); k++) {
-				glColor3d(0.7 / (i + j + k + 1), 0.6 / (i + j + k + 1), 0.5 / (i + j + k + 1));
+				//glColor3d(0.7 / (i + j + k + 1), 0.6 / (i + j + k + 1), 0.5 / (i + j + k + 1));
 				int vi = mesh->groups[i]->groupFaces[j]->vertex[k];
 				glVertex3fv(mesh->allVertex[vi]->coord);
 			}
@@ -198,7 +201,8 @@ void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	desenhaChao();
-	desenhaObjeto(getCuboMesh());
+	//desenhaObjeto(getCuboMesh());
+	desenhaObjeto(objetos[0]);
 	glutSwapBuffers();
 }
 
@@ -305,6 +309,8 @@ int main(int argc, char** argv) {
 	cout << objetos[0]->allNormals.size();
 	cout << "\n";
 	cout << objetos[0]->allMappings.size();
+	cout << "\n";
+	cout << objetos[0]->groups[0]->groupFaces.size();
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
