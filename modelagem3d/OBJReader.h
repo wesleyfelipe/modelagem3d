@@ -12,6 +12,7 @@ string verticeStringInicial = "v";
 string normalStringInicial = "vn";
 string texturaStringInicial = "vt";
 string faceStringInicial = "f";
+string groupStringInicial = "g";
 
 vector<string> split(string str, char delimiter) {
 	vector<string> internal;
@@ -43,6 +44,10 @@ bool isFace(vector<string> sLine) {
 	return sLine[0] == faceStringInicial;
 }
 
+bool isGroup(vector<string> sLine) {
+	return sLine[0] == groupStringInicial;
+}
+
 Vertex* buildVertex(vector<string> sLine) {
 	return new Vertex(atof(sLine[1].c_str()), atof(sLine[2].c_str()), atof(sLine[3].c_str()));
 }
@@ -55,11 +60,6 @@ Face* buildFace(vector<string> sLine) {
 	Face *face = new Face();
 	for (string text : sLine) {
 		if (text != faceStringInicial) {
-			string teste = "12.2//12.1";
-			vector<string> gg = split(teste, '/');
-			cout << gg.size();
-			cout << "\n";
-
 			vector<string> vFace = split(text, '/');
 			face->vertex.push_back(atoi(vFace[0].c_str()) - 1);
 			if (vFace.size() > 1) {
@@ -88,15 +88,18 @@ Mesh* buildMesh(ifstream *file) {
 				mesh->allNormals.push_back(buildVertex(sLine));
 			} else if (isTextura(sLine)) {
 				mesh->allMappings.push_back(buildTexture(sLine));
-			} else if(isFace(sLine)){
+			} else if (isFace(sLine)) {
 				group->groupFaces.push_back(buildFace(sLine));
-			} else {
-				/**
-				for (string text : sLine) {
-					cout << text;
-					cout << "\n";
+			} else if(isGroup(sLine)){
+				if (group->name.empty()) {
+					group->name = sLine[1];
+				} else {
+					mesh->groups.push_back(group);
+					group = new Group();
+					group->name = sLine[1];
 				}
-				*/
+			} else {
+				// TODO
 			}
 		}
 	}

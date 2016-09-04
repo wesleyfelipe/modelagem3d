@@ -308,13 +308,6 @@ void keyboard(unsigned char key, int x, int y) {
 int main(int argc, char** argv) {
 
 	objetos.push_back(readObjFile(".\\objs\\mesa\\mesa01.obj"));
-	cout << objetos[0]->allVertex.size();
-	cout << "\n";
-	cout << objetos[0]->allNormals.size();
-	cout << "\n";
-	cout << objetos[0]->allMappings.size();
-	cout << "\n";
-	cout << objetos[0]->groups[0]->groupFaces.size();
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
