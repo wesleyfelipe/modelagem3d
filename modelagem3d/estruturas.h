@@ -36,7 +36,7 @@ typedef struct Face {
 
 typedef struct Group {
 	string name;
-	GLint material;
+	string material;
 	vector<Face*> groupFaces;
 	Group(vector<Face*> f) {
 		groupFaces = f;

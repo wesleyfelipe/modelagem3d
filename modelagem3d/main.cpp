@@ -159,6 +159,8 @@ void desenhaObjeto(Mesh *mesh) {
 			}
 			for (int k = 0; k < mesh->groups[i]->groupFaces[j]->vertex.size(); k++) {
 				int vi = mesh->groups[i]->groupFaces[j]->vertex[k];
+				int ni = mesh->groups[i]->groupFaces[j]->normals[k];
+				glNormal3fv(mesh->allNormals[ni]->coord);
 				glVertex3fv(mesh->allVertex[vi]->coord);
 			}
 			glEnd();

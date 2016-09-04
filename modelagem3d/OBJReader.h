@@ -13,6 +13,7 @@ string normalStringInicial = "vn";
 string texturaStringInicial = "vt";
 string faceStringInicial = "f";
 string groupStringInicial = "g";
+string usemtlStringInicial = "usemtl";
 
 vector<string> split(string str, char delimiter) {
 	vector<string> internal;
@@ -38,6 +39,10 @@ bool isNormal(vector<string> sLine) {
 
 bool isTextura(vector<string> sLine) {
 	return sLine[0] == texturaStringInicial;
+}
+
+bool isMaterialRef(vector<string> sLine) {
+	return sLine[0] == usemtlStringInicial;
 }
 
 bool isFace(vector<string> sLine) {
@@ -98,8 +103,10 @@ Mesh* buildMesh(ifstream *file) {
 					group = new Group();
 					group->name = sLine[1];
 				}
+			} else if(isMaterialRef(sLine)){
+				group->material = sLine[1];
 			} else {
-				// TODO
+				//TODO
 			}
 		}
 	}
