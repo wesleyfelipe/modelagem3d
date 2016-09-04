@@ -27,7 +27,7 @@ Vertex *eye = new Vertex(0, 0, 0);
 Vertex *at = new Vertex(0,0,0);
 //altura
 Vertex *up = new Vertex(0, 0, 0);
-
+//vetor dos objetos renderizados
 vector<Mesh*> objetos;
 
 void desenhaObjeto(Mesh *mesh) {
@@ -105,44 +105,40 @@ void reshape(int w, int h) {
 
 void specialKeyboard(int key, int x, int y) {
 	switch (key) {
-	case GLUT_KEY_LEFT:
-	{
-		if (a == 0) {
-			a = 360;
-		}
-		a -= 3;
-		at->update(eye->getX() + cos((a*M_PI) / 180), at->getY(), eye->getZ() + sin((a*M_PI) / 180));
-		break;
-	}
-	case GLUT_KEY_RIGHT:
-	{
-		if (a == 360) {
-			a = 0;
-		}
-		a += 3;
-		at->update(eye->getX() + cos((a*M_PI) / 180), at->getY(), eye->getZ() + sin((a*M_PI) / 180));
-		break;
-	}
-	case GLUT_KEY_UP:
-	{
-		double novoZ1 = eye->getZ() + sin((a*M_PI) / 180);
-		double novoX1 = eye->getX() + cos((a*M_PI) / 180);
-		if (!(novoZ1 >= maxZ || novoZ1 <= -maxZ || novoX1 >= maxX || novoX1 <= -maxX)) {
-			eye->update(novoX1, eye->getY(), novoZ1);
+		case GLUT_KEY_LEFT:{
+			if (a == 0) {
+				a = 360;
+			}
+			a -= 3;
 			at->update(eye->getX() + cos((a*M_PI) / 180), at->getY(), eye->getZ() + sin((a*M_PI) / 180));
+			break;
 		}
-		break;
-	}
-	case GLUT_KEY_DOWN:
-	{
-		double novoZ2 = eye->getZ() - sin((a*M_PI) / 180);
-		double novoX2 = eye->getX() - cos((a*M_PI) / 180);
-		if (!(novoZ2 >= maxZ || novoZ2 <= -maxZ || novoX2 >= maxX || novoX2 <= -maxX)) {
-			eye->update(novoX2, eye->getY(), novoZ2);
+		case GLUT_KEY_RIGHT:{
+			if (a == 360) {
+				a = 0;
+			}
+			a += 3;
 			at->update(eye->getX() + cos((a*M_PI) / 180), at->getY(), eye->getZ() + sin((a*M_PI) / 180));
+			break;
 		}
-		break;
-	}
+		case GLUT_KEY_UP:{
+			double novoZ1 = eye->getZ() + sin((a*M_PI) / 180);
+			double novoX1 = eye->getX() + cos((a*M_PI) / 180);
+			if (!(novoZ1 >= maxZ || novoZ1 <= -maxZ || novoX1 >= maxX || novoX1 <= -maxX)) {
+				eye->update(novoX1, eye->getY(), novoZ1);
+				at->update(eye->getX() + cos((a*M_PI) / 180), at->getY(), eye->getZ() + sin((a*M_PI) / 180));
+			}
+			break;
+		}
+		case GLUT_KEY_DOWN:{
+			double novoZ2 = eye->getZ() - sin((a*M_PI) / 180);
+			double novoX2 = eye->getX() - cos((a*M_PI) / 180);
+			if (!(novoZ2 >= maxZ || novoZ2 <= -maxZ || novoX2 >= maxX || novoX2 <= -maxX)) {
+				eye->update(novoX2, eye->getY(), novoZ2);
+				at->update(eye->getX() + cos((a*M_PI) / 180), at->getY(), eye->getZ() + sin((a*M_PI) / 180));
+			}
+			break;
+		}
 	}
 }
 
