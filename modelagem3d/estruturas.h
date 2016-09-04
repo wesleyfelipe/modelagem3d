@@ -20,6 +20,20 @@ typedef struct Vertex {
 		coord[1] = y;
 		coord[2] = z;
 	};
+	void update(float x, float y, float z) {
+		coord[0] = x;
+		coord[1] = y;
+		coord[2] = z;
+	}
+	float getX() {
+		return coord[0];
+	}
+	float getY() {
+		return coord[1];
+	}
+	float getZ() {
+		return coord[2];
+	}
 } Vertex;
 
 typedef struct Face {

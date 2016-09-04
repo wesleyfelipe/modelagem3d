@@ -25,9 +25,8 @@ float dx = 0;
 float dy = 0;
 float dz = -1;
 //altura
-float px = 0;
-float py = -0.1;
-float pz = 0;
+Vertex *up = new Vertex(0, 0, 0);
+
 //angulo
 float a = 270;
 //tamanho do mundo 400x400 (maxX e maxZ sao as dimensoes maximas do mundo em cada quadrante)
@@ -79,7 +78,7 @@ void configView(void) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(60, (double)width / (double)height, 1, 100);
-	gluLookAt(eyex, eyey, eyez, dx, dy, dz, px, py, pz);
+	gluLookAt(eyex, eyey, eyez, dx, dy, dz, up->getX(), up->getY(), up->getZ());
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -93,16 +92,14 @@ void init(void) {
 	dx = 0;
 	dy = 1;
 	dz = -1;
-	px = 0;
-	py = -0.6;
-	pz = 0;
+	up->update(0, -0.6, 0);
 	a = 270;
 	configView();
 }
 
 void update(int value) {
 	glLoadIdentity();
-	gluLookAt(eyex, eyey, eyez, dx, dy, dz, px, py, pz);
+	gluLookAt(eyex, eyey, eyez, dx, dy, dz, up->getX(), up->getY(), up->getZ());
 	glutPostRedisplay();
 	glutTimerFunc(33, update, 1);
 }
