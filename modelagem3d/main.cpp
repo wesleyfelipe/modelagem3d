@@ -309,7 +309,8 @@ void keyboard(unsigned char key, int x, int y) {
 
 int main(int argc, char** argv) {
 
-	objetos.push_back(readObjFile(".\\objs\\mesa\\mesa01.obj"));
+	//objetos.push_back(readObjFile(".\\objs\\mesa\\mesa01.obj"));
+	objetos.push_back(readObjFile(".\\objs\\paintball\\cenaPaintball.obj"));
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
