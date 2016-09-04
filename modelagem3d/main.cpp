@@ -36,117 +36,9 @@ int maxZ = 200;
 
 vector<Mesh*> objetos;
 
-Mesh* getCuboMesh() {
-	vector<Vertex*> allVertex;
-	allVertex.push_back(new Vertex(1.0f, 1.0f, 1.0f));
-	allVertex.push_back(new Vertex(-1.0f, 1.0f, 1.0f));
-	allVertex.push_back(new Vertex(-1.0f, -1.0f, 1.0f));
-	allVertex.push_back(new Vertex(1.0f, -1.0f, 1.0f));
-	allVertex.push_back(new Vertex(1.0f, 1.0f, -1.0f));
-	allVertex.push_back(new Vertex(-1.0f, 1.0f, -1.0f));
-	allVertex.push_back(new Vertex(-1.0f, -1.0f, -1.0f));
-	allVertex.push_back(new Vertex(1.0f, -1.0f, -1.0f));
-
-	vector<Vertex*> allNormals;
-	allNormals.push_back(new Vertex(1.0f, 0.0f, 0.0f));
-	allNormals.push_back(new Vertex(-1.0f, 0.0f, 0.0f));
-	allNormals.push_back(new Vertex(0.0f, 1.0f, 0.0f));
-	allNormals.push_back(new Vertex(0.0f, -1.0f, 0.0f));
-	allNormals.push_back(new Vertex(0.0f, 0.0f, 1.0f));
-	allNormals.push_back(new Vertex(0.0f, 0.0f, -1.0f));
-
-	vector<GLint> f0v;
-	f0v.push_back(0);
-	f0v.push_back(1);
-	f0v.push_back(2);
-	f0v.push_back(3);
-
-	vector<GLint> f0n;
-	f0n.push_back(4);
-	f0n.push_back(4);
-	f0n.push_back(4);
-	f0n.push_back(4);
-
-	vector<GLint> f1v;
-	f1v.push_back(0);
-	f1v.push_back(3);
-	f1v.push_back(7);
-	f1v.push_back(4);
-
-	vector<GLint> f1n;
-	f1n.push_back(0);
-	f1n.push_back(0);
-	f1n.push_back(0);
-	f1n.push_back(0);
-
-	vector<GLint> f2v;
-	f2v.push_back(0);
-	f2v.push_back(4);
-	f2v.push_back(5);
-	f2v.push_back(1);
-
-	vector<GLint> f2n;
-	f2n.push_back(2);
-	f2n.push_back(2);
-	f2n.push_back(2);
-	f2n.push_back(2);
-
-	vector<GLint> f3v;
-	f3v.push_back(2);
-	f3v.push_back(1);
-	f3v.push_back(5);
-	f3v.push_back(6);
-
-	vector<GLint> f3n;
-	f3n.push_back(1);
-	f3n.push_back(1);
-	f3n.push_back(1);
-	f3n.push_back(1);
-
-	vector<GLint> f4v;
-	f4v.push_back(3);
-	f4v.push_back(2);
-	f4v.push_back(6);
-	f4v.push_back(7);
-
-	vector<GLint> f4n;
-	f4n.push_back(3);
-	f4n.push_back(3);
-	f4n.push_back(3);
-	f4n.push_back(3);
-
-	vector<GLint> f5v;
-	f5v.push_back(7);
-	f5v.push_back(6);
-	f5v.push_back(5);
-	f5v.push_back(4);
-
-	vector<GLint> f5n;
-	f5n.push_back(5);
-	f5n.push_back(5);
-	f5n.push_back(5);
-	f5n.push_back(5);
-
-	vector<GLint> mappings;
-
-	vector<Face*> faces;
-	faces.push_back(new Face(f0v, f0n, mappings));
-	faces.push_back(new Face(f1v, f1n, mappings));
-	faces.push_back(new Face(f2v, f2n, mappings));
-	faces.push_back(new Face(f3v, f3n, mappings));
-	faces.push_back(new Face(f4v, f4n, mappings));
-	faces.push_back(new Face(f5v, f5n, mappings));
-
-	vector<Group*> groups;
-	groups.push_back(new Group(faces));
-
-	vector<TextureMapping*> allMappings;
-	return new Mesh(groups, allVertex, allNormals, allMappings);
-}
-
 void desenhaObjeto(Mesh *mesh) {
 	glEnable(GL_DEPTH_TEST);
-	glColor3d(0.7, 0.6, 0.5);
+	
 	for (int i = 0; i < mesh->groups.size(); i++) {
 		for (int j = 0; j < mesh->groups[i]->groupFaces.size(); j++) {
 			int faceSize = mesh->groups[i]->groupFaces[j]->vertex.size();
@@ -157,6 +49,12 @@ void desenhaObjeto(Mesh *mesh) {
 			} else {
 				glBegin(GL_POLYGON);
 			}
+
+			float r = ((float)rand() / (RAND_MAX));
+			float g = ((float)rand() / (RAND_MAX));
+			float b = ((float)rand() / (RAND_MAX));
+			glColor3d(r, g, b);
+
 			for (int k = 0; k < mesh->groups[i]->groupFaces[j]->vertex.size(); k++) {
 				int vi = mesh->groups[i]->groupFaces[j]->vertex[k];
 				int ni = mesh->groups[i]->groupFaces[j]->normals[k];
@@ -207,8 +105,9 @@ void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	desenhaChao();
-	//desenhaObjeto(getCuboMesh());
-	desenhaObjeto(objetos[0]);
+	for (Mesh *m : objetos) {
+		desenhaObjeto(m);
+	}
 	glutSwapBuffers();
 }
 
@@ -309,7 +208,7 @@ void keyboard(unsigned char key, int x, int y) {
 
 int main(int argc, char** argv) {
 
-	//objetos.push_back(readObjFile(".\\objs\\mesa\\mesa01.obj"));
+	objetos.push_back(readObjFile(".\\objs\\mesa\\mesa01.obj"));
 	objetos.push_back(readObjFile(".\\objs\\paintball\\cenaPaintball.obj"));
 
 	glutInit(&argc, argv);
