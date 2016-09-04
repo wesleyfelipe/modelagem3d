@@ -34,6 +34,8 @@ float a = 270;
 int maxX = 200;
 int maxZ = 200;
 
+vector<Mesh*> objetos;
+
 Mesh* getCuboMesh() {
 	vector<Vertex*> allVertex;
 	allVertex.push_back(new Vertex(1.0f, 1.0f, 1.0f));
@@ -197,7 +199,6 @@ void display(void) {
 
 	desenhaChao();
 	desenhaObjeto(getCuboMesh());
-
 	glutSwapBuffers();
 }
 
@@ -297,6 +298,8 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 int main(int argc, char** argv) {
+
+	objetos.push_back(readObjFile(".\\objs\\mesa\\mesa01.obj"));
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
