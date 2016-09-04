@@ -16,20 +16,17 @@ using namespace std;
 //dimensoes da tela
 int width = 800;
 int height = 600;
-//posicao da camera no mundo
-Vertex *eye = new Vertex(0, 0, 0);
-//direcao em que aponta a camera
-float dx = 0;
-float dy = 0;
-float dz = -1;
-//altura
-Vertex *up = new Vertex(0, 0, 0);
-
 //angulo
 float a = 270;
 //tamanho do mundo 400x400 (maxX e maxZ sao as dimensoes maximas do mundo em cada quadrante)
 int maxX = 200;
 int maxZ = 200;
+//posicao da camera no mundo
+Vertex *eye = new Vertex(0, 0, 0);
+//direcao em que aponta a camera
+Vertex *at = new Vertex(0,0,0);
+//altura
+Vertex *up = new Vertex(0, 0, 0);
 
 vector<Mesh*> objetos;
 
@@ -76,7 +73,7 @@ void configView(void) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(60, (double)width / (double)height, 1, 100);
-	gluLookAt(eye->getX(), eye->getY(), eye->getZ(), dx, dy, dz, up->getX(), up->getY(), up->getZ());
+	gluLookAt(eye->getX(), eye->getY(), eye->getZ(), at->getX(), at->getY(), at->getZ(), up->getX(), up->getY(), up->getZ());
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -85,9 +82,7 @@ void init(void) {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	srand((unsigned)time(NULL));
 	eye->update(0,13,0);
-	dx = 0;
-	dy = 1;
-	dz = -1;
+	at->update(0,1,-1);
 	up->update(0, -0.6, 0);
 	a = 270;
 	configView();
@@ -95,7 +90,7 @@ void init(void) {
 
 void update(int value) {
 	glLoadIdentity();
-	gluLookAt(eye->getX(), eye->getY(), eye->getZ(), dx, dy, dz, up->getX(), up->getY(), up->getZ());
+	gluLookAt(eye->getX(), eye->getY(), eye->getZ(), at->getX(), at->getY(), at->getZ(), up->getX(), up->getY(), up->getZ());
 	glutPostRedisplay();
 	glutTimerFunc(33, update, 1);
 }
@@ -116,8 +111,7 @@ void specialKeyboard(int key, int x, int y) {
 			a = 360;
 		}
 		a -= 3;
-		dz = eye->getZ() + sin((a*M_PI) / 180);
-		dx = eye->getX() + cos((a*M_PI) / 180);
+		at->update(eye->getX() + cos((a*M_PI) / 180), at->getY(), eye->getZ() + sin((a*M_PI) / 180));
 		break;
 	}
 	case GLUT_KEY_RIGHT:
@@ -126,8 +120,7 @@ void specialKeyboard(int key, int x, int y) {
 			a = 0;
 		}
 		a += 3;
-		dz = eye->getZ() + sin((a*M_PI) / 180);
-		dx = eye->getX() + cos((a*M_PI) / 180);
+		at->update(eye->getX() + cos((a*M_PI) / 180), at->getY(), eye->getZ() + sin((a*M_PI) / 180));
 		break;
 	}
 	case GLUT_KEY_UP:
@@ -136,8 +129,7 @@ void specialKeyboard(int key, int x, int y) {
 		double novoX1 = eye->getX() + cos((a*M_PI) / 180);
 		if (!(novoZ1 >= maxZ || novoZ1 <= -maxZ || novoX1 >= maxX || novoX1 <= -maxX)) {
 			eye->update(novoX1, eye->getY(), novoZ1);
-			dz = eye->getZ() + sin((a*M_PI) / 180);
-			dx = eye->getX() + cos((a*M_PI) / 180);
+			at->update(eye->getX() + cos((a*M_PI) / 180), at->getY(), eye->getZ() + sin((a*M_PI) / 180));
 		}
 		break;
 	}
@@ -147,8 +139,7 @@ void specialKeyboard(int key, int x, int y) {
 		double novoX2 = eye->getX() - cos((a*M_PI) / 180);
 		if (!(novoZ2 >= maxZ || novoZ2 <= -maxZ || novoX2 >= maxX || novoX2 <= -maxX)) {
 			eye->update(novoX2, eye->getY(), novoZ2);
-			dz = eye->getZ() + sin((a*M_PI) / 180);
-			dx = eye->getX() + cos((a*M_PI) / 180);
+			at->update(eye->getX() + cos((a*M_PI) / 180), at->getY(), eye->getZ() + sin((a*M_PI) / 180));
 		}
 		break;
 	}
