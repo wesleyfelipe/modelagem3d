@@ -114,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="estruturas.h" />
+    <ClInclude Include="OBJReader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
