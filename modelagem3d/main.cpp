@@ -146,14 +146,18 @@ Mesh* getCuboMesh() {
 
 void desenhaObjeto(Mesh *mesh) {
 	glEnable(GL_DEPTH_TEST);
-
 	glColor3d(0.7, 0.6, 0.5);
-
 	for (int i = 0; i < mesh->groups.size(); i++) {
 		for (int j = 0; j < mesh->groups[i]->groupFaces.size(); j++) {
-			glBegin(GL_POLYGON);
+			int faceSize = mesh->groups[i]->groupFaces[j]->vertex.size();
+			if (faceSize == 3) {
+				glBegin(GL_TRIANGLES);
+			} else if (faceSize == 4) {
+				glBegin(GL_QUADS);
+			} else {
+				glBegin(GL_POLYGON);
+			}
 			for (int k = 0; k < mesh->groups[i]->groupFaces[j]->vertex.size(); k++) {
-				//glColor3d(0.7 / (i + j + k + 1), 0.6 / (i + j + k + 1), 0.5 / (i + j + k + 1));
 				int vi = mesh->groups[i]->groupFaces[j]->vertex[k];
 				glVertex3fv(mesh->allVertex[vi]->coord);
 			}

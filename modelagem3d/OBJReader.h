@@ -55,10 +55,21 @@ Face* buildFace(vector<string> sLine) {
 	Face *face = new Face();
 	for (string text : sLine) {
 		if (text != faceStringInicial) {
+			string teste = "12.2//12.1";
+			vector<string> gg = split(teste, '/');
+			cout << gg.size();
+			cout << "\n";
+
 			vector<string> vFace = split(text, '/');
-			face->vertex.push_back(atoi(vFace[0].c_str()) -1);
-			face->mappings.push_back(atoi(vFace[1].c_str()) -1);
-			face->normals.push_back(atoi(vFace[2].c_str()) -1);
+			face->vertex.push_back(atoi(vFace[0].c_str()) - 1);
+			if (vFace.size() > 1) {
+				if (!vFace[1].empty()) {
+					face->mappings.push_back(atoi(vFace[1].c_str()) - 1);
+				}
+				if (vFace.size() > 2) {
+					face->normals.push_back(atoi(vFace[2].c_str()) - 1);
+				}				
+			}
 		}
 	}
 	return face;
