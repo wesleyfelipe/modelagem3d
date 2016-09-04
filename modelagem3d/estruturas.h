@@ -51,6 +51,9 @@ typedef struct Mesh {
 		allNormals = n;
 		allMappings = m;
 	}
+	Mesh() {
+	}
+
 } Mesh;
 
 #endif
