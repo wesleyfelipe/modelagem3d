@@ -26,7 +26,7 @@ float dy = 0;
 float dz = -1;
 //altura
 float px = 0;
-float py = 1;
+float py = -0.1;
 float pz = 0;
 //angulo
 float a = 270;
@@ -66,45 +66,8 @@ void desenhaObjeto(Mesh *mesh) {
 	}
 }
 
-void desenhaChao(void) {
-	//quadrante 4 - red
-	glColor3f(1.0, 0.0, 0.0);
-	glBegin(GL_QUADS);
-	glVertex3d(0, -1, 0);
-	glVertex3d(0, -1, -maxZ);
-	glVertex3d(maxX, -1, -maxZ);
-	glVertex3d(maxX, -1, 0);
-	glEnd();
-	//quadrante 3 - green
-	glColor3f(0.0, 1.0, 0.0);
-	glBegin(GL_QUADS);
-	glVertex3d(0, -1, 0);
-	glVertex3d(0, -1, -maxZ);
-	glVertex3d(-maxX, -1, -maxZ);
-	glVertex3d(-maxX, -1, 0);
-	glEnd();
-	//quadrante 2 - blue
-	glColor3f(0.0, 0.0, 1.0);
-	glBegin(GL_QUADS);
-	glVertex3d(0, -1, 0);
-	glVertex3d(0, -1, maxZ);
-	glVertex3d(-maxX, -1, maxZ);
-	glVertex3d(-maxX, -1, 0);
-	glEnd();
-	//quadrante 1 - yellow
-	glColor3f(1.0, 1.0, 0.0);
-	glBegin(GL_QUADS);
-	glVertex3d(0, -1, 0);
-	glVertex3d(maxX, -1, 0);
-	glVertex3d(maxX, -1, maxZ);
-	glVertex3d(0, -1, maxZ);
-	glEnd();
-}
-
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	desenhaChao();
 	for (Mesh *m : objetos) {
 		desenhaObjeto(m);
 	}
@@ -115,7 +78,7 @@ void configView(void) {
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60, (double)width / (double)height, 1, 50);
+	gluPerspective(60, (double)width / (double)height, 1, 100);
 	gluLookAt(eyex, eyey, eyez, dx, dy, dz, px, py, pz);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -125,11 +88,14 @@ void init(void) {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	srand((unsigned)time(NULL));
 	eyex = 0;
-	eyey = 0;
+	eyey = 13;
 	eyez = 0;
 	dx = 0;
-	dy = 0;
+	dy = 1;
 	dz = -1;
+	px = 0;
+	py = -0.6;
+	pz = 0;
 	a = 270;
 	configView();
 }
