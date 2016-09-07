@@ -59,7 +59,7 @@ private:
 		return ar;
 	}
 
-	void fillMaterialVector(ifstream *file, vector<Material*> *v) {
+	void fillMaterialVector(ifstream *file, map<string, Material*> *v) {
 		string line;
 		Material *material = new Material();
 		while (getline(*file, line)) {
@@ -79,7 +79,7 @@ private:
 					if (material->getId().empty()) {
 						material->setId(sLine[1]);
 					} else {
-						v->push_back(material);
+						v->insert(make_pair(material->getId(), material));
 						material = new Material();
 						material->setId(sLine[1]);
 					}
@@ -88,11 +88,11 @@ private:
 				}
 			}
 		}
-		v->push_back(material);
+		v->insert(make_pair(material->getId(), material));
 	}
 
 public:
-	void readMtlFile(string filename, vector<Material*> *materials) {
+	void readMtlFile(string filename, map<string,Material*> *materials) {
 		ifstream file(filename);
 		if (!file.fail()) {
 			fillMaterialVector(&file, materials);

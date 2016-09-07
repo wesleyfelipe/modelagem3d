@@ -5,6 +5,7 @@
 #include <time.h>
 #include <math.h>
 #include <vector>
+#include <map>
 #include <iostream>
 #include "estruturas.h"
 #include "OBJReader.h"
@@ -31,7 +32,7 @@ Vertex *up = new Vertex(0, 0, 0);
 //vetor dos objetos renderizados
 vector<Mesh*> objetos;
 //vetor de materiais
-vector<Material*> materials;
+map<string,Material*> materials;
 // fonte de luz 0
 GLfloat light0_ambient[] = { 0.0, 0.1, 0.0, 1.0 };
 GLfloat light0_diffuse[] = { 1.0, 1.0, 0.0, 1.0 };
