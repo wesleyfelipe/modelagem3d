@@ -145,6 +145,9 @@ public:
 	void setMaterial(string m) {
 		material = m;
 	}
+	string getMaterial() {
+		return material;
+	}
 };
 
 class Mesh {

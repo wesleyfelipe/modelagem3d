@@ -37,12 +37,21 @@ map<string,Material*> materials;
 GLfloat light0_ambient[] = { 0.0, 0.1, 0.0, 1.0 };
 GLfloat light0_diffuse[] = { 1.0, 1.0, 0.0, 1.0 };
 GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat light0_position[] = { 1.0, 2.0, 3.0, 1.0 };
+GLfloat light0_position[] = { 1.0, 20.0, 3.0, 1.0 };
 
 void desenhaMalha(Mesh *mesh) {
 	glEnable(GL_DEPTH_TEST);
 	
 	for (int i = 0; i < mesh->getGroups()->size(); i++) {
+		string matId = mesh->getGroups()->at(i)->getMaterial();
+		/**if (!matId.empty()) {
+			Material *ma = materials.at(mesh->getGroups()->at(i)->getMaterial());
+			glMaterialfv(GL_FRONT, GL_AMBIENT, ma->getKa());
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, ma->getKd());
+			glMaterialfv(GL_FRONT, GL_SPECULAR, ma->getKs());
+			glMaterialf(GL_FRONT, GL_SHININESS, ma->getNs());
+		} */
+
 		for (int j = 0; j < mesh->getGroups()->at(i)->getGroupFaces()->size(); j++) {
 			int faceSize = mesh->getGroups()->at(i)->getGroupFaces()->at(j)->getVertex()->size();
 			if (faceSize == 3) {
@@ -89,6 +98,8 @@ void init(void) {
 	at->update(0,1,-1);
 	up->update(0, -0.6, 0);
 	a = 270;
+
+	glShadeModel(GL_SMOOTH);
 
 	glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, light0_ambient);
