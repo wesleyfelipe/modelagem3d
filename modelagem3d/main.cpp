@@ -30,7 +30,13 @@ Vertex *at = new Vertex(0,0,0);
 Vertex *up = new Vertex(0, 0, 0);
 //vetor dos objetos renderizados
 vector<Mesh*> objetos;
+//vetor de materiais
 vector<Material*> materials;
+// fonte de luz 0
+GLfloat light0_ambient[] = { 0.0, 0.1, 0.0, 1.0 };
+GLfloat light0_diffuse[] = { 1.0, 1.0, 0.0, 1.0 };
+GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+GLfloat light0_position[] = { 1.0, 2.0, 3.0, 1.0 };
 
 void desenhaMalha(Mesh *mesh) {
 	glEnable(GL_DEPTH_TEST);
@@ -45,11 +51,6 @@ void desenhaMalha(Mesh *mesh) {
 			} else {
 				glBegin(GL_POLYGON);
 			}
-
-			float r = ((float)rand() / (RAND_MAX));
-			float g = ((float)rand() / (RAND_MAX));
-			float b = ((float)rand() / (RAND_MAX));
-			glColor3d(r, g, b);
 
 			for (int k = 0; k < mesh->getGroups()->at(i)->getGroupFaces()->at(j)->getVertex()->size(); k++) {
 				GLint vi = mesh->getGroups()->at(i)->getGroupFaces()->at(j)->getVertex()->at(k);
@@ -87,6 +88,13 @@ void init(void) {
 	at->update(0,1,-1);
 	up->update(0, -0.6, 0);
 	a = 270;
+
+	glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light0_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light0_specular);
+	glEnable(GL_LIGHT0); glEnable(GL_LIGHTING);
+
 	configView();
 }
 
