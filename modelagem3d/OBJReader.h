@@ -14,6 +14,7 @@ string texturaStringInicial = "vt";
 string faceStringInicial = "f";
 string groupStringInicial = "g";
 string usemtlStringInicial = "usemtl";
+string mtllibStringIncial = "mtllib";
 
 vector<string> split(string str, char delimiter) {
 	vector<string> internal;
@@ -39,6 +40,10 @@ bool isNormal(vector<string> sLine) {
 
 bool isTextura(vector<string> sLine) {
 	return sLine[0] == texturaStringInicial;
+}
+
+bool isMtlLib(vector<string> sLine) {
+	return sLine[0] == mtllibStringIncial;
 }
 
 bool isMaterialRef(vector<string> sLine) {
@@ -80,10 +85,11 @@ Face* buildFace(vector<string> sLine) {
 	return face;
 }
 
-Mesh* buildMesh(ifstream *file) {
+ObjSpec* buildMesh(ifstream *file) {
 	string line;
 	Mesh *mesh = new Mesh();
 	Group *group = new Group();
+	string mtlib = "";
 	while (getline(*file, line)) {
 		vector<string> sLine = split(line, ' ');
 		if (sLine.size() > 0 && !line.empty() && !isComentario(sLine)) {
@@ -103,23 +109,32 @@ Mesh* buildMesh(ifstream *file) {
 					group = new Group();
 					group->name = sLine[1];
 				}
-			} else if(isMaterialRef(sLine)){
+			} else if (isMaterialRef(sLine)) {
 				group->material = sLine[1];
+			} else if(isMtlLib(sLine)){
+				mtlib = sLine[1];
 			} else {
 				//TODO
 			}
 		}
 	}
 	mesh->groups.push_back(group);
-	return mesh;
+	ObjSpec *spec = new ObjSpec(mesh, mtlib);
+	return spec;
 }
 
-Mesh* readObjFile(string filename) {
+ObjSpec* readObjFile(string filename) {
 	ifstream file(filename);
 	if (file.fail()) {
+		file.close();
 		return 0;
 	} else {
-		return buildMesh(&file);
+		ObjSpec *spec = buildMesh(&file);
+		if (spec->mtllibFileName == "") {
+			spec->mtllibFileName = split(filename, '.')[1] + ".mtl";
+		}
+		file.close();
+		return spec;
 	}
 }
 

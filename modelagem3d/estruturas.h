@@ -13,6 +13,16 @@ typedef struct TextureMapping {
 	};
 } TextureMapping;
 
+typedef struct Material {
+	string id;
+	float ka[4];
+	float kd[4];
+	float ks[4];
+	float ns;
+	string mapKd;
+	Material(){}
+} Material;
+
 typedef struct Vertex {
 	float coord[3];
 	Vertex(float x, float y, float z) {
@@ -73,5 +83,14 @@ typedef struct Mesh {
 	}
 
 } Mesh;
+
+typedef struct ObjSpec {
+	Mesh *mesh;
+	string mtllibFileName;
+	ObjSpec(Mesh *m, string mtl) {
+		mesh = m;
+		mtllibFileName = mtl;
+	}
+} ObjSpec;
 
 #endif

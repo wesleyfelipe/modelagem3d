@@ -151,9 +151,11 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 int main(int argc, char** argv) {
+	ObjSpec *spec1 = readObjFile(".\\objs\\mesa\\mesa01.obj");
+	ObjSpec *spec2 = readObjFile(".\\objs\\paintball\\cenaPaintball.obj");
 
-	objetos.push_back(readObjFile(".\\objs\\mesa\\mesa01.obj"));
-	objetos.push_back(readObjFile(".\\objs\\paintball\\cenaPaintball.obj"));
+	objetos.push_back(spec1->mesh);
+	objetos.push_back(spec2->mesh);
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
