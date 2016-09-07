@@ -30,6 +30,7 @@ Vertex *at = new Vertex(0,0,0);
 Vertex *up = new Vertex(0, 0, 0);
 //vetor dos objetos renderizados
 vector<Mesh*> objetos;
+vector<Material*> materials;
 
 void desenhaMalha(Mesh *mesh) {
 	glEnable(GL_DEPTH_TEST);
@@ -152,17 +153,22 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 int main(int argc, char** argv) {
+	printf("%s", "Inicializando... \n");
+
 	ObjReader *objReader = new ObjReader();
+	MltReader *mtlReader = new MltReader();
 
 	ObjSpec *spec1 = objReader->readObjFile(".\\objs\\mesa\\mesa01.obj");
-	ObjSpec *spec2 = objReader->readObjFile(".\\objs\\paintball\\cenaPaintball.obj");
+	mtlReader->readMtlFile(".\\objs\\mesa\\" + spec1->getMtllibFilename(), &materials);
 
-	vector<Material*> materials;
-	MltReader *mtlReader = new MltReader();
-	mtlReader->readMtlFile(".\\objs\\paintball\\cenaPaintball.mtl", &materials);
+	ObjSpec *spec2 = objReader->readObjFile(".\\objs\\paintball\\cenaPaintball.obj");
+	mtlReader->readMtlFile(".\\objs\\paintball\\" + spec2->getMtllibFilename(), &materials);
 
 	objetos.push_back(spec1->getMesh());
 	objetos.push_back(spec2->getMesh());
+
+	printf("%s %d %s", "Total de malhas lidas:", objetos.size(), "\n");
+	printf("%s %d %s", "Total de materiais lidos:", materials.size(), "\n");
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
