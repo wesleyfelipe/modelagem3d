@@ -70,16 +70,17 @@ private:
 
 	Face* buildFace(vector<string> sLine) {
 		Face *face = new Face();
+		
 		for (string text : sLine) {
 			if (text != faceStringInicial) {
 				vector<string> vFace = split(text, '/');
-				face->vertex.push_back(atoi(vFace[0].c_str()) - 1);
+				face->getVertex()->push_back(atoi(vFace[0].c_str()) - 1);
 				if (vFace.size() > 1) {
 					if (!vFace[1].empty()) {
-						face->mappings.push_back(atoi(vFace[1].c_str()) - 1);
+						face->getMappings()->push_back(atoi(vFace[1].c_str()) - 1);
 					}
 					if (vFace.size() > 2) {
-						face->normals.push_back(atoi(vFace[2].c_str()) - 1);
+						face->getNormals()->push_back(atoi(vFace[2].c_str()) - 1);
 					}
 				}
 			}
@@ -96,29 +97,29 @@ private:
 			vector<string> sLine = split(line, ' ');
 			if (sLine.size() > 0 && !line.empty() && !isComentario(sLine)) {
 				if (isVertice(sLine)) {
-					mesh->allVertex.push_back(buildVertex(sLine));
+					mesh->getAllVertex()->push_back(buildVertex(sLine));
 				}
 				else if (isNormal(sLine)) {
-					mesh->allNormals.push_back(buildVertex(sLine));
+					mesh->getAllNormals()->push_back(buildVertex(sLine));
 				}
 				else if (isTextura(sLine)) {
-					mesh->allMappings.push_back(buildTexture(sLine));
+					mesh->getAllMappings()->push_back(buildTexture(sLine));
 				}
 				else if (isFace(sLine)) {
-					group->groupFaces.push_back(buildFace(sLine));
+					group->getGroupFaces()->push_back(buildFace(sLine));
 				}
 				else if (isGroup(sLine)) {
-					if (group->name.empty()) {
-						group->name = sLine[1];
+					if (group->getName().empty()) {
+						group->setName(sLine[1]);
 					}
 					else {
-						mesh->groups.push_back(group);
+						mesh->getGroups()->push_back(group);
 						group = new Group();
-						group->name = sLine[1];
+						group->setName(sLine[1]);
 					}
 				}
 				else if (isMaterialRef(sLine)) {
-					group->material = sLine[1];
+					group->setMaterial(sLine[1]);
 				}
 				else if (isMtlLib(sLine)) {
 					mtlib = sLine[1];
@@ -128,7 +129,7 @@ private:
 				}
 			}
 		}
-		mesh->groups.push_back(group);
+		mesh->getGroups()->push_back(group);
 		ObjSpec *spec = new ObjSpec(mesh, mtlib);
 		return spec;
 	}

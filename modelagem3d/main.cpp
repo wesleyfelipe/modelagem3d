@@ -34,9 +34,9 @@ vector<Mesh*> objetos;
 void desenhaMalha(Mesh *mesh) {
 	glEnable(GL_DEPTH_TEST);
 	
-	for (int i = 0; i < mesh->groups.size(); i++) {
-		for (int j = 0; j < mesh->groups[i]->groupFaces.size(); j++) {
-			int faceSize = mesh->groups[i]->groupFaces[j]->vertex.size();
+	for (int i = 0; i < mesh->getGroups()->size(); i++) {
+		for (int j = 0; j < mesh->getGroups()->at(i)->getGroupFaces()->size(); j++) {
+			int faceSize = mesh->getGroups()->at(i)->getGroupFaces()->at(j)->getVertex()->size();
 			if (faceSize == 3) {
 				glBegin(GL_TRIANGLES);
 			} else if (faceSize == 4) {
@@ -50,11 +50,11 @@ void desenhaMalha(Mesh *mesh) {
 			float b = ((float)rand() / (RAND_MAX));
 			glColor3d(r, g, b);
 
-			for (int k = 0; k < mesh->groups[i]->groupFaces[j]->vertex.size(); k++) {
-				int vi = mesh->groups[i]->groupFaces[j]->vertex[k];
-				int ni = mesh->groups[i]->groupFaces[j]->normals[k];
-				glNormal3fv(mesh->allNormals[ni]->coord);
-				glVertex3fv(mesh->allVertex[vi]->coord);
+			for (int k = 0; k < mesh->getGroups()->at(i)->getGroupFaces()->at(j)->getVertex()->size(); k++) {
+				GLint vi = mesh->getGroups()->at(i)->getGroupFaces()->at(j)->getVertex()->at(k);
+				GLint ni = mesh->getGroups()->at(i)->getGroupFaces()->at(j)->getNormals()->at(k);
+				glNormal3fv(mesh->getAllNormals()->at(ni)->getCoord());
+				glVertex3fv(mesh->getAllVertex()->at(vi)->getCoord());
 			}
 			glEnd();
 		}

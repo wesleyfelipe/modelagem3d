@@ -5,26 +5,35 @@
 
 using namespace std;
 
-typedef struct TextureMapping {
+class TextureMapping {
+private:
 	float coord[2];
+public:
 	TextureMapping(float x, float y) {
 		coord[0] = x;
 		coord[1] = y;
-	};
-} TextureMapping;
+	}
+	float* getCoord() {
+		return coord;
+	}
+};
 
-typedef struct Material {
+class Material {
+private:
 	string id;
 	float ka[4];
 	float kd[4];
 	float ks[4];
 	float ns;
 	string mapKd;
-	Material(){}
-} Material;
+public:
+	Material() {}
+};
 
-typedef struct Vertex {
+class Vertex {
+private:
 	float coord[3];
+public:
 	Vertex(float x, float y, float z) {
 		coord[0] = x;
 		coord[1] = y;
@@ -44,45 +53,96 @@ typedef struct Vertex {
 	float getZ() {
 		return coord[2];
 	}
-} Vertex;
+	float* getCoord() {
+		return coord;
+	}
+};
 
-typedef struct Face {
-	vector<GLint> vertex;
-	vector<GLint> normals;
-	vector<GLint> mappings;
-	Face(vector<GLint> v, vector<GLint> n, vector<GLint> m) {
+class Face {
+private:
+	vector<GLint> *vertex;
+	vector<GLint> *normals;
+	vector<GLint> *mappings;
+public:
+	Face(vector<GLint> *v, vector<GLint> *n, vector<GLint> *m) {
 		vertex = v;
 		normals = n;
 		mappings = m;
 	}
-	Face(){}
-} Face;
+	Face() {
+		vertex = new vector<GLint>();
+		normals = new vector<GLint>();
+		mappings = new vector<GLint>();
+	}
+	vector<GLint>* getVertex() {
+		return vertex;
+	}
+	vector<GLint>* getNormals() {
+		return normals;
+	}
+	vector<GLint>* getMappings() {
+		return mappings;
+	}
+};
 
-typedef struct Group {
+class Group {
+private:
 	string name;
 	string material;
-	vector<Face*> groupFaces;
-	Group(vector<Face*> f) {
+	vector<Face*> *groupFaces;
+public:
+	Group(vector<Face*> *f) {
 		groupFaces = f;
 	}
-	Group(){}
-} Group;
+	Group() {
+		groupFaces = new vector<Face*>();
+	}
+	vector<Face*>* getGroupFaces() {
+		return groupFaces;
+	}
+	string getName() {
+		return name;
+	}
+	void setName(string n) {
+		name = n;
+	}
+	void setMaterial(string m) {
+		material = m;
+	}
+};
 
-typedef struct Mesh {
-	vector<Group*> groups;
-	vector<Vertex*> allVertex;
-	vector<Vertex*> allNormals;
-	vector<TextureMapping*> allMappings;
-	Mesh(vector<Group*> g, vector<Vertex*> v, vector<Vertex*> n, vector<TextureMapping*> m) {
+class Mesh {
+private:
+	vector<Group*> *groups;
+	vector<Vertex*> *allVertex;
+	vector<Vertex*> *allNormals;
+	vector<TextureMapping*> *allMappings;
+public:
+	Mesh(vector<Group*> *g, vector<Vertex*> *v, vector<Vertex*> *n, vector<TextureMapping*> *m) {
 		groups = g;
 		allVertex = v;
 		allNormals = n;
 		allMappings = m;
 	}
 	Mesh() {
+		groups = new vector<Group*>();
+		allVertex = new vector<Vertex*>();
+		allNormals = new vector<Vertex*>();
+		allMappings = new vector<TextureMapping*>();
 	}
-
-} Mesh;
+	vector<Group*>* getGroups() {
+		return groups;
+	}
+	vector<Vertex*>* getAllVertex() {
+		return allVertex;
+	}
+	vector<Vertex*>* getAllNormals() {
+		return allNormals;
+	}
+	vector<TextureMapping*>* getAllMappings() {
+		return allMappings;
+	}
+};
 
 class ObjSpec {
 private:
