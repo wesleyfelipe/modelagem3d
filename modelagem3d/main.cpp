@@ -35,9 +35,9 @@ vector<Mesh*> objetos;
 map<string,Material*> materials;
 // fonte de luz 0
 GLfloat light0_ambient[] = { 0.0, 0.1, 0.0, 1.0 };
-GLfloat light0_diffuse[] = { 1.0, 1.0, 0.0, 1.0 };
+GLfloat light0_diffuse[] = { 0.0, 0.0, 1.0, 1.0 };
 GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat light0_position[] = { 1.0, 20.0, 3.0, 1.0 };
+GLfloat light0_position[] = { 1.0, 2.0, 3.0, 1.0 };
 
 void desenhaMalha(Mesh *mesh) {
 	glEnable(GL_DEPTH_TEST);
