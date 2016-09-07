@@ -8,6 +8,7 @@
 #include <iostream>
 #include "estruturas.h"
 #include "OBJReader.h"
+#include "MtlReader.h"
 
 #define M_PI (3.141592653589793)
 
@@ -151,8 +152,10 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 int main(int argc, char** argv) {
-	ObjSpec *spec1 = readObjFile(".\\objs\\mesa\\mesa01.obj");
-	ObjSpec *spec2 = readObjFile(".\\objs\\paintball\\cenaPaintball.obj");
+	ObjReader *objReader = new ObjReader();
+
+	ObjSpec *spec1 = objReader->readObjFile(".\\objs\\mesa\\mesa01.obj");
+	ObjSpec *spec2 = objReader->readObjFile(".\\objs\\paintball\\cenaPaintball.obj");
 
 	objetos.push_back(spec1->mesh);
 	objetos.push_back(spec2->mesh);
