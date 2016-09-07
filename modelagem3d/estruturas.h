@@ -84,13 +84,27 @@ typedef struct Mesh {
 
 } Mesh;
 
-typedef struct ObjSpec {
+class ObjSpec {
+private:
 	Mesh *mesh;
 	string mtllibFileName;
+public:
 	ObjSpec(Mesh *m, string mtl) {
 		mesh = m;
 		mtllibFileName = mtl;
 	}
-} ObjSpec;
+	Mesh* getMesh() {
+		return mesh;
+	}
+	string getMtllibFilename() {
+		return mtllibFileName;
+	}
+	void setMesh(Mesh *m) {
+		mesh = m;
+	}
+	void setMtllibFilename(string filename) {
+		mtllibFileName = filename;
+	}
+};
 
 #endif

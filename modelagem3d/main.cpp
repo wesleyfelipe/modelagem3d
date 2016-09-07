@@ -31,7 +31,7 @@ Vertex *up = new Vertex(0, 0, 0);
 //vetor dos objetos renderizados
 vector<Mesh*> objetos;
 
-void desenhaObjeto(Mesh *mesh) {
+void desenhaMalha(Mesh *mesh) {
 	glEnable(GL_DEPTH_TEST);
 	
 	for (int i = 0; i < mesh->groups.size(); i++) {
@@ -64,7 +64,7 @@ void desenhaObjeto(Mesh *mesh) {
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (Mesh *m : objetos) {
-		desenhaObjeto(m);
+		desenhaMalha(m);
 	}
 	glutSwapBuffers();
 }
@@ -157,8 +157,8 @@ int main(int argc, char** argv) {
 	ObjSpec *spec1 = objReader->readObjFile(".\\objs\\mesa\\mesa01.obj");
 	ObjSpec *spec2 = objReader->readObjFile(".\\objs\\paintball\\cenaPaintball.obj");
 
-	objetos.push_back(spec1->mesh);
-	objetos.push_back(spec2->mesh);
+	objetos.push_back(spec1->getMesh());
+	objetos.push_back(spec2->getMesh());
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);

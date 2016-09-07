@@ -18,7 +18,7 @@ private:
 	string mapKdStringInicial = "map_Kd";
 
 	void fillMaterialVector(ifstream *file, vector<Material*> *vector) {
-
+		//TODO
 	}
 
 public:
