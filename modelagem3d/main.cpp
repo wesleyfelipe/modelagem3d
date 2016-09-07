@@ -157,6 +157,10 @@ int main(int argc, char** argv) {
 	ObjSpec *spec1 = objReader->readObjFile(".\\objs\\mesa\\mesa01.obj");
 	ObjSpec *spec2 = objReader->readObjFile(".\\objs\\paintball\\cenaPaintball.obj");
 
+	vector<Material*> materials;
+	MltReader *mtlReader = new MltReader();
+	mtlReader->readMtlFile(".\\objs\\paintball\\cenaPaintball.mtl", &materials);
+
 	objetos.push_back(spec1->getMesh());
 	objetos.push_back(spec2->getMesh());
 

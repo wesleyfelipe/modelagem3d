@@ -116,6 +116,7 @@
     <ClInclude Include="estruturas.h" />
     <ClInclude Include="MtlReader.h" />
     <ClInclude Include="OBJReader.h" />
+    <ClInclude Include="split.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -4,6 +4,7 @@
 #include <string.h>
 #include <fstream>
 #include <sstream>
+#include "split.h"
 
 using namespace std;
 
@@ -18,15 +19,7 @@ private:
 	string usemtlStringInicial = "usemtl";
 	string mtllibStringIncial = "mtllib";
 
-	vector<string> split(string str, char delimiter) {
-		vector<string> internal;
-		stringstream ss(str);
-		string tok;
-		while (getline(ss, tok, delimiter)) {
-			internal.push_back(tok);
-		}
-		return internal;
-	}
+	
 
 	bool isComentario(vector<string> sLine) {
 		return sLine[0][0] == comentarioChar;

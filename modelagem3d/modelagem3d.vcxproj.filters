@@ -32,5 +32,8 @@
     <ClInclude Include="MtlReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="split.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

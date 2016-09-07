@@ -21,13 +21,49 @@ public:
 class Material {
 private:
 	string id;
-	float ka[4];
-	float kd[4];
-	float ks[4];
+	float *ka;
+	float *kd;
+	float *ks;
 	float ns;
 	string mapKd;
 public:
 	Material() {}
+	void setKa(float *a) {
+		ka = a;
+	}
+	void setKd(float *d) {
+		kd = d;
+	}
+	void setKs(float *s) {
+		ks = s;
+	}
+	void setNs(float n) {
+		ns = n;
+	}
+	void setMapKd(string m) {
+		mapKd = m;
+	}
+	void setId(string i) {
+		id = i;
+	}
+	string getId() {
+		return id;
+	}
+	float* getKa() {
+		return ka;
+	}
+	float* getKs() {
+		return ks;
+	}
+	float getNs() {
+		return ns;
+	}
+	float* getKd() {
+		return kd;
+	}
+	string getMapKd() {
+		return mapKd;
+	}
 };
 
 class Vertex {
