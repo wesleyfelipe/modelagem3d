@@ -64,6 +64,9 @@ public:
 	string getMapKd() {
 		return mapKd;
 	}
+	bool hasTexture() {
+		return !mapKd.empty();
+	}
 };
 
 class Vertex {

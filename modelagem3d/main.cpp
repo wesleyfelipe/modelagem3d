@@ -205,7 +205,17 @@ void keyboard(unsigned char key, int x, int y) {
 	}
 }
 
-int main(int argc, char** argv) {
+GLint contarTotalTexturasMateriais(map<string, Material*> mat) {
+	GLint k = 0;
+	for (auto it: mat ) {
+		if (it.second->hasTexture()) {
+			k++;
+		}
+	}
+	return k;
+}
+
+void setup() {
 	printf("%s", "Inicializando... \n");
 
 	ObjReader *objReader = new ObjReader();
@@ -222,6 +232,11 @@ int main(int argc, char** argv) {
 
 	printf("%s %d %s", "Total de malhas lidas:", objetos.size(), "\n");
 	printf("%s %d %s", "Total de materiais lidos:", materials.size(), "\n");
+	printf("%s %d %s", "Total de materiais com textura: ", contarTotalTexturasMateriais(materials), "\n");
+}
+
+int main(int argc, char** argv) {
+	setup();
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
