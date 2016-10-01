@@ -39,13 +39,21 @@ GLfloat light0_diffuse[] = { 0.0, 0.0, 1.0, 1.0 };
 GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 GLfloat light0_position[] = { 1.0, 2.0, 3.0, 1.0 };
 
+void moveObjects(float x, float y, float z) {
+	for (int i = 0; i < objetos.size(); i++) {
+		for (int j = 0; j < objetos.at(i)->getAllVertex()->size(); j++) {
+			objetos.at(i)->getAllVertex()->at(j)->addXYZ(x, y, z);
+		}
+	}
+}
+
 void desenhaMalha(Mesh *mesh) {
 	glEnable(GL_DEPTH_TEST);
 	
 	for (int i = 0; i < mesh->getGroups()->size(); i++) {
 		string matId = mesh->getGroups()->at(i)->getMaterial();
 		/**if (!matId.empty()) {
-			Material *ma = materials.at(mesh->getGroups()->at(i)->getMaterial());
+			Material *ma = materials.at(matId);
 			glMaterialfv(GL_FRONT, GL_AMBIENT, ma->getKa());
 			glMaterialfv(GL_FRONT, GL_DIFFUSE, ma->getKd());
 			glMaterialfv(GL_FRONT, GL_SPECULAR, ma->getKs());
@@ -166,9 +174,34 @@ void specialKeyboard(int key, int x, int y) {
 
 void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
-	case 'q':
-	case 'Q':
-		exit(0);
+		case 'q':
+		case 'Q':
+			exit(0);
+			break;
+		case 'd':
+		case 'D':
+			moveObjects(1.0f, 0.0f, 0.0f);
+			break;
+		case 'a':
+		case 'A':
+			moveObjects(-1.0f, 0.0f, 0.0f);
+			break;
+		case 'w':
+		case 'W':
+			moveObjects(0.0f, 0.0f, -1.0f);
+			break;
+		case 's':
+		case 'S':
+			moveObjects(0.0f, 0.0f, 1.0f);
+			break;
+		case 'z':
+		case 'Z':
+			moveObjects(0.0f, 1.0f, 0.0f);
+			break;
+		case 'x':
+		case 'X':
+			moveObjects(0.0f, -1.0f, 0.0f);
+			break;
 	}
 }
 

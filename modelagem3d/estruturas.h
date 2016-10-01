@@ -92,6 +92,21 @@ public:
 	float* getCoord() {
 		return coord;
 	}
+	void addX(float nx) {
+		coord[0] = coord[0] + nx;
+	}
+	void addY(float ny) {
+		coord[1] = coord[1] + ny;
+	}
+	void addZ(float nz) {
+		coord[2] = coord[2] + nz;
+	}
+	void addXYZ(float x, float y, float z) {
+		addX(x);
+		addY(y);
+		addZ(z);
+	}
+
 };
 
 class Face {
