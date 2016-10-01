@@ -188,11 +188,11 @@ void keyboard(unsigned char key, int x, int y) {
 			break;
 		case 'w':
 		case 'W':
-			moveObjects(0.0f, 0.0f, -1.0f);
+			moveObjects(+cos((a*M_PI) / 180), 0.0f, +sin((a*M_PI) / 180));
 			break;
 		case 's':
 		case 'S':
-			moveObjects(0.0f, 0.0f, 1.0f);
+			moveObjects(-cos((a*M_PI) / 180), 0.0f, -sin((a*M_PI) / 180));
 			break;
 		case 'z':
 		case 'Z':

@@ -26,6 +26,7 @@ private:
 	float *ks;
 	float ns;
 	string mapKd;
+	GLint textureId;
 public:
 	Material() {}
 	void setKa(float *a) {
@@ -46,6 +47,9 @@ public:
 	void setId(string i) {
 		id = i;
 	}
+	void setTextureId(GLint id) {
+		textureId = id;
+	}
 	string getId() {
 		return id;
 	}
@@ -63,6 +67,9 @@ public:
 	}
 	string getMapKd() {
 		return mapKd;
+	}
+	GLint getTextureId() {
+		return textureId;
 	}
 	bool hasTexture() {
 		return !mapKd.empty();
