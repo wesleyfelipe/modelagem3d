@@ -10,6 +10,8 @@
 #include "estruturas.h"
 #include "OBJReader.h"
 #include "MtlReader.h"
+#include "Image.h"
+#include "ImageReader.h"
 
 #define M_PI (3.141592653589793)
 
@@ -49,19 +51,26 @@ void moveObjects(float x, float y, float z) {
 
 void desenhaMalha(Mesh *mesh) {
 	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_MODELVIEW);
 	
 	for (int i = 0; i < mesh->getGroups()->size(); i++) {
-		string matId = mesh->getGroups()->at(i)->getMaterial();
-		/**if (!matId.empty()) {
-			Material *ma = materials.at(matId);
-			glMaterialfv(GL_FRONT, GL_AMBIENT, ma->getKa());
-			glMaterialfv(GL_FRONT, GL_DIFFUSE, ma->getKd());
-			glMaterialfv(GL_FRONT, GL_SPECULAR, ma->getKs());
-			glMaterialf(GL_FRONT, GL_SHININESS, ma->getNs());
-		} */
+		Group *group = mesh->getGroups()->at(i);
 
-		for (int j = 0; j < mesh->getGroups()->at(i)->getGroupFaces()->size(); j++) {
-			int faceSize = mesh->getGroups()->at(i)->getGroupFaces()->at(j)->getVertex()->size();
+		string matId = group->getMaterial();
+		if (!matId.empty()) {
+			Material *ma = materials.at(matId);
+			GLuint tid = ma->getTextureId();
+			glBindTexture(GL_TEXTURE_2D, tid);
+			//glMaterialfv(GL_FRONT, GL_AMBIENT, ma->getKa());
+			//glMaterialfv(GL_FRONT, GL_DIFFUSE, ma->getKd());
+			//glMaterialfv(GL_FRONT, GL_SPECULAR, ma->getKs());
+			//glMaterialf(GL_FRONT, GL_SHININESS, ma->getNs());
+		} 
+
+		for (int j = 0; j < group->getGroupFaces()->size(); j++) {
+			Face *face = group->getGroupFaces()->at(j);
+			int faceSize = face->getVertex()->size();
 			if (faceSize == 3) {
 				glBegin(GL_TRIANGLES);
 			} else if (faceSize == 4) {
@@ -70,9 +79,11 @@ void desenhaMalha(Mesh *mesh) {
 				glBegin(GL_POLYGON);
 			}
 
-			for (int k = 0; k < mesh->getGroups()->at(i)->getGroupFaces()->at(j)->getVertex()->size(); k++) {
-				GLint vi = mesh->getGroups()->at(i)->getGroupFaces()->at(j)->getVertex()->at(k);
-				GLint ni = mesh->getGroups()->at(i)->getGroupFaces()->at(j)->getNormals()->at(k);
+			for (int k = 0; k < face->getVertex()->size(); k++) {
+				GLint vi = face->getVertex()->at(k);
+				GLint ni = face->getNormals()->at(k);
+				GLint vt = face->getMappings()->at(k);
+				glTexCoord2fv(mesh->getAllMappings()->at(vt)->getCoord());
 				glNormal3fv(mesh->getAllNormals()->at(ni)->getCoord());
 				glVertex3fv(mesh->getAllVertex()->at(vi)->getCoord());
 			}
@@ -113,7 +124,8 @@ void init(void) {
 	glLightfv(GL_LIGHT0, GL_AMBIENT, light0_ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light0_specular);
-	glEnable(GL_LIGHT0); glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHTING);
 
 	configView();
 }
@@ -220,6 +232,7 @@ void setup() {
 
 	ObjReader *objReader = new ObjReader();
 	MltReader *mtlReader = new MltReader();
+	ImageReader *imageReader = new ImageReader();
 
 	ObjSpec *spec1 = objReader->readObjFile(".\\objs\\mesa\\mesa01.obj");
 	mtlReader->readMtlFile(".\\objs\\mesa\\" + spec1->getMtllibFilename(), &materials);
@@ -230,9 +243,28 @@ void setup() {
 	objetos.push_back(spec1->getMesh());
 	objetos.push_back(spec2->getMesh());
 
+	//Texturas
+	glEnable(GL_TEXTURE_2D);
+	Image *img = imageReader->lerArquivo(".\\objs\\paintball\\muro02.ppm");
+
+	GLint textureCount = contarTotalTexturasMateriais(materials);
+	GLuint *ids = new GLuint[textureCount];
+	glGenTextures(textureCount, ids);
+
+	int k = 0;
+	for (auto it : materials) {
+		if (it.second->hasTexture()) {
+			it.second->setTextureId(ids[k++]);
+			glBindTexture(GL_TEXTURE_2D, it.second->getTextureId());
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->getWidth(), img->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, img->getPixels());
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		}
+	}
+
 	printf("%s %d %s", "Total de malhas lidas:", objetos.size(), "\n");
 	printf("%s %d %s", "Total de materiais lidos:", materials.size(), "\n");
-	printf("%s %d %s", "Total de materiais com textura: ", contarTotalTexturasMateriais(materials), "\n");
+	printf("%s %d %s", "Total de materiais com textura: ", textureCount, "\n");
 }
 
 int main(int argc, char** argv) {
