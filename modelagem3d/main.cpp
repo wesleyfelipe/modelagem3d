@@ -38,8 +38,8 @@ map<string,Material*> materials;
 // fonte de luz 0
 GLfloat light0_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
 GLfloat light0_diffuse[] = { 0.3, 0.5, 1.0, 1.0 };
-GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat light0_position[] = { 1.0, 1.0, 3.0, 1.0 };
+GLfloat light0_specular[] = { 3.0, 3.0, 3.0, 1.0 };
+GLfloat light0_position[] = { 1.0, 6.0, 3.0, 1.0 };
 // flag iluminacao
 bool light = true;
 // flag textura
