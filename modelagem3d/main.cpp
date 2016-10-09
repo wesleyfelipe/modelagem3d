@@ -43,8 +43,6 @@ GLfloat light0_position[] = { 1.0, 1.0, 3.0, 1.0 };
 // flag iluminacao
 bool light = true;
 
-GLuint texName;
-
 void moveObjects(float x, float y, float z) {
 	for (int i = 0; i < objetos.size(); i++) {
 		for (int j = 0; j < objetos.at(i)->getAllVertex()->size(); j++) {
@@ -54,7 +52,6 @@ void moveObjects(float x, float y, float z) {
 }
 
 void desenhaMalha(Mesh *mesh) {
-	glBindTexture(GL_TEXTURE_2D, texName);
 	
 	for (int i = 0; i < mesh->getGroups()->size(); i++) {
 		Group *group = mesh->getGroups()->at(i);
@@ -62,8 +59,8 @@ void desenhaMalha(Mesh *mesh) {
 		string matId = group->getMaterial();
 		if (!matId.empty()) {
 			Material *ma = materials.at(matId);
-			//GLuint tid = ma->getTextureId();
-			//glBindTexture(GL_TEXTURE_2D, tid);
+			GLuint tid = ma->getTextureId();
+			glBindTexture(GL_TEXTURE_2D, tid);
 			//glMaterialfv(GL_FRONT, GL_AMBIENT, ma->getKa());
 			//glMaterialfv(GL_FRONT, GL_DIFFUSE, ma->getKd());
 			//glMaterialfv(GL_FRONT, GL_SPECULAR, ma->getKs());
@@ -254,60 +251,56 @@ GLint contarTotalTexturasMateriais(map<string, Material*> mat) {
 	return k;
 }
 
+void setupTexture() {
+
+}
+
 void setup() {
-	printf("%s", "Inicializando... \n");
+	std::printf("%s", "Inicializando... \n");
 
 	ObjReader *objReader = new ObjReader();
 	MltReader *mtlReader = new MltReader();
 	ImageReader *imageReader = new ImageReader();
 
-	ObjSpec *spec1 = objReader->readObjFile(".\\objs\\mesa\\mesa01.obj");
-	mtlReader->readMtlFile(".\\objs\\mesa\\" + spec1->getMtllibFilename(), &materials);
+	ObjSpec *spec2 = objReader->readObjFile("cenaPaintball.obj");
+	mtlReader->readMtlFile(spec2->getMtllibFilename(), &materials);
 
-	ObjSpec *spec2 = objReader->readObjFile(".\\objs\\paintball\\cenaPaintball.obj");
-	mtlReader->readMtlFile(".\\objs\\paintball\\" + spec2->getMtllibFilename(), &materials);
-
-	objetos.push_back(spec1->getMesh());
+	//objetos.push_back(spec1->getMesh());
 	objetos.push_back(spec2->getMesh());
 
 	//Texturas
-	Image *image = imageReader->lerArquivo("muro02.ppm");
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-	glGenTextures(1, &texName);
-	glBindTexture(GL_TEXTURE_2D, texName);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-		GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-		GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->getWidth(),
-		image->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
-		image->getPixels());
-
-	free(image->getPixels());
-
-	/*GLint textureCount = contarTotalTexturasMateriais(materials);
-	GLuint *ids = new GLuint[textureCount];
-	glGenTextures(textureCount, ids);
-
 	int k = 0;
 	for (auto it : materials) {
 		if (it.second->hasTexture()) {
-			it.second->setTextureId(ids[k++]);
-			glBindTexture(GL_TEXTURE_2D, it.second->getTextureId());
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->getWidth(), img->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, img->getPixels());
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		}
-	} */
+			Image *image = imageReader->lerArquivo(it.second->getMapKd());
+			if (!image) {
+				break;
+			}
 
-	printf("%s %d %s", "Total de malhas lidas:", objetos.size(), "\n");
-	printf("%s %d %s", "Total de materiais lidos:", materials.size(), "\n");
-	//printf("%s %d %s", "Total de materiais com textura: ", textureCount, "\n");
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+			GLuint texName;
+			glGenTextures(1, &texName);
+			glBindTexture(GL_TEXTURE_2D, texName);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+				GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+				GL_NEAREST);
+	
+			it.second->setTextureId(texName);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->getWidth(),
+				image->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+				image->getPixels());
+
+			std::free(image->getPixels());
+		}
+	}
+
+	std::printf("%s %d %s", "Total de malhas lidas:", objetos.size(), "\n");
+	std::printf("%s %d %s", "Total de materiais lidos:", materials.size(), "\n");
 }
 
 int main(int argc, char** argv) {
@@ -316,7 +309,7 @@ int main(int argc, char** argv) {
 	glutInitWindowSize(width, height); //tamanho da janela
 	glutInitWindowPosition(0, 0); //posição da janela
 	glutCreateWindow("Modelagem 3D");
-	// glutFullScreen();
+	glutFullScreen();
 
 	init();
 	setup();

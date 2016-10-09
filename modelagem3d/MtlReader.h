@@ -66,6 +66,7 @@ private:
 			vector<string> sLine = split(line, ' ');
 			if (sLine.size() > 0 && !line.empty() && !isComentario(sLine)) {
 				if (isMapKd(sLine)) {
+					printf("%s ", sLine[1]);
 					material->setMapKd(sLine[1]);
 				} else if (isNs(sLine)) {
 					material->setNs(atof(sLine[1].c_str()));
