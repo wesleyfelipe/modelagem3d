@@ -40,6 +40,8 @@ GLfloat light0_ambient[] = { 0.0, 0.1, 0.0, 1.0 };
 GLfloat light0_diffuse[] = { 0.0, 0.0, 1.0, 1.0 };
 GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 GLfloat light0_position[] = { 1.0, 2.0, 3.0, 1.0 };
+// flag iluminacao
+bool light = true;
 
 void moveObjects(float x, float y, float z) {
 	for (int i = 0; i < objetos.size(); i++) {
@@ -110,6 +112,16 @@ void configView(void) {
 	glLoadIdentity();
 }
 
+void enableLight() {
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHTING);
+}
+
+void disableLight() {
+	glDisable(GL_LIGHT0);
+	glDisable(GL_LIGHTING);
+}
+
 void init(void) {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	srand((unsigned)time(NULL));
@@ -124,8 +136,7 @@ void init(void) {
 	glLightfv(GL_LIGHT0, GL_AMBIENT, light0_ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light0_specular);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHTING);
+	enableLight();
 
 	configView();
 }
@@ -214,6 +225,16 @@ void keyboard(unsigned char key, int x, int y) {
 		case 'X':
 			moveObjects(0.0f, -1.0f, 0.0f);
 			break;
+		case 'l':
+		case 'L':
+			if (!light) {
+				enableLight();
+				light = true;
+			} else {
+				disableLight();
+				light = false;
+			}
+			break;
 	}
 }
 
@@ -246,6 +267,8 @@ void setup() {
 	//Texturas
 	glEnable(GL_TEXTURE_2D);
 	Image *img = imageReader->lerArquivo(".\\objs\\paintball\\muro02.ppm");
+
+	printf("%s %d \n", "Altura da imagem: ", img->getHeight());
 
 	GLint textureCount = contarTotalTexturasMateriais(materials);
 	GLuint *ids = new GLuint[textureCount];
