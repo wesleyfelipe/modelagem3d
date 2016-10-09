@@ -63,11 +63,10 @@ void desenhaMalha(Mesh *mesh) {
 			Material *ma = materials.at(matId);
 			GLuint tid = ma->getTextureId();
 			glBindTexture(GL_TEXTURE_2D, tid);
-			printf("%f ", ma->getKa());
-			//glMaterialfv(GL_FRONT, GL_AMBIENT, ma->getKa());
-			//glMaterialfv(GL_FRONT, GL_DIFFUSE, ma->getKd());
-			//glMaterialfv(GL_FRONT, GL_SPECULAR, ma->getKs());
-			//glMaterialf(GL_FRONT, GL_SHININESS, ma->getNs());
+			glMaterialfv(GL_FRONT, GL_AMBIENT, ma->getKa());
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, ma->getKd());
+			glMaterialfv(GL_FRONT, GL_SPECULAR, ma->getKs());
+			glMaterialf(GL_FRONT, GL_SHININESS, ma->getNs());
 		} 
 
 		for (int j = 0; j < group->getGroupFaces()->size(); j++) {
