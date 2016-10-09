@@ -137,7 +137,7 @@ public:
 		else {
 			ObjSpec *spec = buildMesh(&file);
 			if (spec->getMtllibFilename() == "") {
-				spec->setMtllibFilename(split(filename, '.')[1] + ".mtl");
+				spec->setMtllibFilename(split(filename, '.')[0] + ".mtl");
 			}
 			file.close();
 			return spec;

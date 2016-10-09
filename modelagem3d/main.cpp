@@ -42,6 +42,8 @@ GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 GLfloat light0_position[] = { 1.0, 1.0, 3.0, 1.0 };
 // flag iluminacao
 bool light = true;
+// flag textura
+bool texture = true;
 
 void moveObjects(float x, float y, float z) {
 	for (int i = 0; i < objetos.size(); i++) {
@@ -61,6 +63,7 @@ void desenhaMalha(Mesh *mesh) {
 			Material *ma = materials.at(matId);
 			GLuint tid = ma->getTextureId();
 			glBindTexture(GL_TEXTURE_2D, tid);
+			printf("%f ", ma->getKa());
 			//glMaterialfv(GL_FRONT, GL_AMBIENT, ma->getKa());
 			//glMaterialfv(GL_FRONT, GL_DIFFUSE, ma->getKd());
 			//glMaterialfv(GL_FRONT, GL_SPECULAR, ma->getKs());
@@ -93,7 +96,10 @@ void desenhaMalha(Mesh *mesh) {
 
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_TEXTURE_2D);
+
+	if (texture) {
+		glEnable(GL_TEXTURE_2D);
+	} 
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	for (Mesh *m : objetos) {
 		desenhaMalha(m);
@@ -238,6 +244,9 @@ void keyboard(unsigned char key, int x, int y) {
 				light = false;
 			}
 			break;
+		case 't':
+		case 'T':
+			texture = !texture;
 	}
 }
 
@@ -265,7 +274,6 @@ void setup() {
 	ObjSpec *spec2 = objReader->readObjFile("cenaPaintball.obj");
 	mtlReader->readMtlFile(spec2->getMtllibFilename(), &materials);
 
-	//objetos.push_back(spec1->getMesh());
 	objetos.push_back(spec2->getMesh());
 
 	//Texturas
@@ -309,7 +317,7 @@ int main(int argc, char** argv) {
 	glutInitWindowSize(width, height); //tamanho da janela
 	glutInitWindowPosition(0, 0); //posição da janela
 	glutCreateWindow("Modelagem 3D");
-	glutFullScreen();
+	//glutFullScreen();
 
 	init();
 	setup();
