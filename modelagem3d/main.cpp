@@ -36,12 +36,14 @@ vector<Mesh*> objetos;
 //vetor de materiais
 map<string,Material*> materials;
 // fonte de luz 0
-GLfloat light0_ambient[] = { 0.0, 0.1, 0.0, 1.0 };
-GLfloat light0_diffuse[] = { 0.0, 0.0, 1.0, 1.0 };
+GLfloat light0_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
+GLfloat light0_diffuse[] = { 0.3, 0.5, 1.0, 1.0 };
 GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat light0_position[] = { 1.0, 2.0, 3.0, 1.0 };
+GLfloat light0_position[] = { 1.0, 1.0, 3.0, 1.0 };
 // flag iluminacao
 bool light = true;
+
+GLuint texName;
 
 void moveObjects(float x, float y, float z) {
 	for (int i = 0; i < objetos.size(); i++) {
@@ -52,9 +54,7 @@ void moveObjects(float x, float y, float z) {
 }
 
 void desenhaMalha(Mesh *mesh) {
-	glEnable(GL_DEPTH_TEST);
-
-	glMatrixMode(GL_MODELVIEW);
+	glBindTexture(GL_TEXTURE_2D, texName);
 	
 	for (int i = 0; i < mesh->getGroups()->size(); i++) {
 		Group *group = mesh->getGroups()->at(i);
@@ -62,8 +62,8 @@ void desenhaMalha(Mesh *mesh) {
 		string matId = group->getMaterial();
 		if (!matId.empty()) {
 			Material *ma = materials.at(matId);
-			GLuint tid = ma->getTextureId();
-			glBindTexture(GL_TEXTURE_2D, tid);
+			//GLuint tid = ma->getTextureId();
+			//glBindTexture(GL_TEXTURE_2D, tid);
 			//glMaterialfv(GL_FRONT, GL_AMBIENT, ma->getKa());
 			//glMaterialfv(GL_FRONT, GL_DIFFUSE, ma->getKd());
 			//glMaterialfv(GL_FRONT, GL_SPECULAR, ma->getKs());
@@ -96,10 +96,14 @@ void desenhaMalha(Mesh *mesh) {
 
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	for (Mesh *m : objetos) {
 		desenhaMalha(m);
 	}
+
 	glutSwapBuffers();
+	glDisable(GL_TEXTURE_2D);
 }
 
 void configView(void) {
@@ -137,6 +141,8 @@ void init(void) {
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light0_specular);
 	enableLight();
+
+	glEnable(GL_DEPTH_TEST);
 
 	configView();
 }
@@ -265,12 +271,26 @@ void setup() {
 	objetos.push_back(spec2->getMesh());
 
 	//Texturas
-	glEnable(GL_TEXTURE_2D);
-	Image *img = imageReader->lerArquivo(".\\objs\\paintball\\muro02.ppm");
+	Image *image = imageReader->lerArquivo("muro02.ppm");
 
-	printf("%s %d \n", "Altura da imagem: ", img->getHeight());
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-	GLint textureCount = contarTotalTexturasMateriais(materials);
+	glGenTextures(1, &texName);
+	glBindTexture(GL_TEXTURE_2D, texName);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+		GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+		GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->getWidth(),
+		image->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+		image->getPixels());
+
+	free(image->getPixels());
+
+	/*GLint textureCount = contarTotalTexturasMateriais(materials);
 	GLuint *ids = new GLuint[textureCount];
 	glGenTextures(textureCount, ids);
 
@@ -283,16 +303,14 @@ void setup() {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		}
-	}
+	} */
 
 	printf("%s %d %s", "Total de malhas lidas:", objetos.size(), "\n");
 	printf("%s %d %s", "Total de materiais lidos:", materials.size(), "\n");
-	printf("%s %d %s", "Total de materiais com textura: ", textureCount, "\n");
+	//printf("%s %d %s", "Total de materiais com textura: ", textureCount, "\n");
 }
 
 int main(int argc, char** argv) {
-	setup();
-
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(width, height); //tamanho da janela
@@ -301,6 +319,7 @@ int main(int argc, char** argv) {
 	// glutFullScreen();
 
 	init();
+	setup();
 
 	glutDisplayFunc(display); //desenho
 	glutReshapeFunc(reshape); //tratamento do redimensionamento da tela
