@@ -151,12 +151,15 @@ private:
 	string name;
 	string material;
 	vector<Face*> *groupFaces;
+	bool enable;
 public:
 	Group(vector<Face*> *f) {
 		groupFaces = f;
+		enable = true;
 	}
 	Group() {
 		groupFaces = new vector<Face*>();
+		enable = true;
 	}
 	vector<Face*>* getGroupFaces() {
 		return groupFaces;
@@ -172,6 +175,15 @@ public:
 	}
 	string getMaterial() {
 		return material;
+	}
+	bool getEnable() {
+		return enable;
+	}
+	void enableGroup() {
+		enable = true;
+	}
+	void disableGroup() {
+		enable = false;
 	}
 };
 

@@ -44,6 +44,10 @@ GLfloat light0_position[] = { 1.0, 6.0, 3.0, 1.0 };
 bool light = true;
 // flag textura
 bool texture = true;
+// Readers
+ObjReader *objReader = new ObjReader();
+MltReader *mtlReader = new MltReader();
+ImageReader *imageReader = new ImageReader();
 
 void moveObjects(float x, float y, float z) {
 	for (int i = 0; i < objetos.size(); i++) {
@@ -58,37 +62,42 @@ void desenhaMalha(Mesh *mesh) {
 	for (int i = 0; i < mesh->getGroups()->size(); i++) {
 		Group *group = mesh->getGroups()->at(i);
 
-		string matId = group->getMaterial();
-		if (!matId.empty()) {
-			Material *ma = materials.at(matId);
-			GLuint tid = ma->getTextureId();
-			glBindTexture(GL_TEXTURE_2D, tid);
-			glMaterialfv(GL_FRONT, GL_AMBIENT, ma->getKa());
-			glMaterialfv(GL_FRONT, GL_DIFFUSE, ma->getKd());
-			glMaterialfv(GL_FRONT, GL_SPECULAR, ma->getKs());
-			glMaterialf(GL_FRONT, GL_SHININESS, ma->getNs());
-		} 
+		if (group->getEnable()) {
 
-		for (int j = 0; j < group->getGroupFaces()->size(); j++) {
-			Face *face = group->getGroupFaces()->at(j);
-			int faceSize = face->getVertex()->size();
-			if (faceSize == 3) {
-				glBegin(GL_TRIANGLES);
-			} else if (faceSize == 4) {
-				glBegin(GL_QUADS);
-			} else {
-				glBegin(GL_POLYGON);
+			string matId = group->getMaterial();
+			if (!matId.empty()) {
+				Material *ma = materials.at(matId);
+				GLuint tid = ma->getTextureId();
+				glBindTexture(GL_TEXTURE_2D, tid);
+				glMaterialfv(GL_FRONT, GL_AMBIENT, ma->getKa());
+				glMaterialfv(GL_FRONT, GL_DIFFUSE, ma->getKd());
+				glMaterialfv(GL_FRONT, GL_SPECULAR, ma->getKs());
+				glMaterialf(GL_FRONT, GL_SHININESS, ma->getNs());
 			}
 
-			for (int k = 0; k < face->getVertex()->size(); k++) {
-				GLint vi = face->getVertex()->at(k);
-				GLint ni = face->getNormals()->at(k);
-				GLint vt = face->getMappings()->at(k);
-				glTexCoord2fv(mesh->getAllMappings()->at(vt)->getCoord());
-				glNormal3fv(mesh->getAllNormals()->at(ni)->getCoord());
-				glVertex3fv(mesh->getAllVertex()->at(vi)->getCoord());
+			for (int j = 0; j < group->getGroupFaces()->size(); j++) {
+				Face *face = group->getGroupFaces()->at(j);
+				int faceSize = face->getVertex()->size();
+				if (faceSize == 3) {
+					glBegin(GL_TRIANGLES);
+				}
+				else if (faceSize == 4) {
+					glBegin(GL_QUADS);
+				}
+				else {
+					glBegin(GL_POLYGON);
+				}
+
+				for (int k = 0; k < face->getVertex()->size(); k++) {
+					GLint vi = face->getVertex()->at(k);
+					GLint ni = face->getNormals()->at(k);
+					GLint vt = face->getMappings()->at(k);
+					glTexCoord2fv(mesh->getAllMappings()->at(vt)->getCoord());
+					glNormal3fv(mesh->getAllNormals()->at(ni)->getCoord());
+					glVertex3fv(mesh->getAllVertex()->at(vi)->getCoord());
+				}
+				glEnd();
 			}
-			glEnd();
 		}
 	}
 }
@@ -203,6 +212,33 @@ void specialKeyboard(int key, int x, int y) {
 	}
 }
 
+void disableAGroup() {
+	for (int i = 0; i < objetos.size(); i++) {
+		Mesh *malha = objetos.at(i);
+		for (int j = 0; j < malha->getGroups()->size(); j++) {
+			Group *group = malha->getGroups()->at(j);
+			if (group->getEnable()) {
+				group->disableGroup();
+				return;
+			}
+		}
+	}
+}
+
+void enableAGroup() {
+	for (int i = objetos.size() -1 ; i >= 0; i--) {
+		
+		Mesh *malha = objetos.at(i);
+		for (int j = malha->getGroups()->size() - 1; j >= 0; j--) {
+			Group *group = malha->getGroups()->at(j);
+			if (!group->getEnable()) {
+				group->enableGroup();
+				return;
+			}
+		}
+	}
+}
+
 void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
 		case 'q':
@@ -246,6 +282,15 @@ void keyboard(unsigned char key, int x, int y) {
 		case 't':
 		case 'T':
 			texture = !texture;
+			break;
+		case 'o':
+		case 'O':
+			disableAGroup();
+			break;
+		case 'p':
+		case 'P':
+			enableAGroup();
+			break;
 	}
 }
 
@@ -259,22 +304,7 @@ GLint contarTotalTexturasMateriais(map<string, Material*> mat) {
 	return k;
 }
 
-void setupTexture() {
-
-}
-
-void setup() {
-	std::printf("%s", "Inicializando... \n");
-
-	ObjReader *objReader = new ObjReader();
-	MltReader *mtlReader = new MltReader();
-	ImageReader *imageReader = new ImageReader();
-
-	ObjSpec *spec2 = objReader->readObjFile("cenaPaintball.obj");
-	mtlReader->readMtlFile(spec2->getMtllibFilename(), &materials);
-
-	objetos.push_back(spec2->getMesh());
-
+void setupTextures() {
 	//Texturas
 	int k = 0;
 	for (auto it : materials) {
@@ -295,7 +325,7 @@ void setup() {
 				GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 				GL_NEAREST);
-	
+
 			it.second->setTextureId(texName);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->getWidth(),
@@ -305,6 +335,17 @@ void setup() {
 			std::free(image->getPixels());
 		}
 	}
+}
+
+void setup() {
+	std::printf("%s", "Inicializando... \n");
+
+	ObjSpec *spec2 = objReader->readObjFile("cenaPaintball.obj");
+	mtlReader->readMtlFile(spec2->getMtllibFilename(), &materials);
+
+	objetos.push_back(spec2->getMesh());
+
+	setupTextures();
 
 	std::printf("%s %d %s", "Total de malhas lidas:", objetos.size(), "\n");
 	std::printf("%s %d %s", "Total de materiais lidos:", materials.size(), "\n");
@@ -315,11 +356,13 @@ int main(int argc, char** argv) {
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(width, height); //tamanho da janela
 	glutInitWindowPosition(0, 0); //posição da janela
+
 	glutCreateWindow("Modelagem 3D");
-	//glutFullScreen();
 
 	init();
 	setup();
+
+	//glutFullScreen();
 
 	glutDisplayFunc(display); //desenho
 	glutReshapeFunc(reshape); //tratamento do redimensionamento da tela
