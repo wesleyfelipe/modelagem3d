@@ -107,8 +107,8 @@ void display(void) {
 
 	if (texture) {
 		glEnable(GL_TEXTURE_2D);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	} 
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	for (Mesh *m : objetos) {
 		desenhaMalha(m);
 	}
@@ -362,7 +362,7 @@ int main(int argc, char** argv) {
 	init();
 	setup();
 
-	//glutFullScreen();
+	glutFullScreen();
 
 	glutDisplayFunc(display); //desenho
 	glutReshapeFunc(reshape); //tratamento do redimensionamento da tela
